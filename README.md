@@ -21,9 +21,35 @@ used by `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/...` 
 | `bel.1.json` | Belgium — Pro League |
 | `tur.1.json` | Turkey — Süper Lig |
 | `sco.1.json` | Scotland — Premiership |
+| `sco.2.json` | Scotland — Championship |
+| `rus.1.json` | Russia — Premier League |
+| `gre.1.json` | Greece — Super League |
+| `aut.1.json` | Austria — Bundesliga |
+| `den.1.json` | Denmark — Superliga |
+| `nor.1.json` | Norway — Eliteserien |
+| `swe.1.json` | Sweden — Allsvenskan |
+| `esp.2.json` | Spain — LaLiga 2 |
+| `ger.2.json` | Germany — 2. Bundesliga |
+| `ita.2.json` | Italy — Serie B |
+| `fra.2.json` | France — Ligue 2 |
+| `ned.2.json` | Netherlands — Keuken Kampioen Divisie |
+| `uefa.champions.json` | UEFA — Champions League |
+| `uefa.europa.json` | UEFA — Europa League |
+| `uefa.europa.conf.json` | UEFA — Conference League |
 
 Every slug was verified live against `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{slug}/teams`
 (2026-10-08) before use.
+
+The 15 second-tier/UEFA files above were pulled via a different method than the first 13: a direct
+`curl`/WebFetch against ESPN was blocked by the sandbox's egress proxy, and a first attempt at reading
+them back through TRMNL's `MergeVariablesShowTool` silently capped every nested array at 5 items
+(confirmed by re-fetching Scottish Championship, `sco.2`, in isolation — it showed exactly 5 teams via
+the tool's raw-input echo when the true roster is 10). The reliable fix: a temporary `transform_js` on
+the live plugin that walks the ESPN response itself and returns the roster as a single JSON **string**
+(`JSON.stringify(...)`), not an array — `MergeVariablesShowTool`'s array cap doesn't apply to strings,
+so the full roster comes back intact. Team counts were sanity-checked against each league's known size
+before being written here. The plugin's `transform_js` and `polling_url` were restored to production
+logic immediately afterward.
 
 Rosters are a point-in-time snapshot (correct as of the 2026/27 season). Re-pull from
 `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/teams` and regenerate the
