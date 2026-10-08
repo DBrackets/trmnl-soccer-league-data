@@ -1,0 +1,54 @@
+name: Compare repository teams with ESPN
+
+on:
+  workflow_dispatch:
+    inputs:
+      json_file:
+        description: "Repository-relative JSON file, e.g. aut.1.json"
+        required: true
+        type: string
+
+      espn_endpoint:
+        description: "ESPN HTTPS teams endpoint, ending in /teams"
+        required: true
+        type: string
+
+      compare_names:
+        description: "Fail if matching IDs have different team names"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  compare-teams:
+    name: Compare team names and IDs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Compare teams
+        id: compare
+        run: |
+          python scripts/check_teams.py \
+            --file "${{ inputs.json_file }}" \
+            --endpoint "${{ inputs.espn_endpoint }}" \
+            --compare-names "${{ inputs.compare_names }}"
+
+      - name: Upload comparison report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: team-comparison-report
+          path: team-comparison-report.md
+          if-no-files-found: warn
+          retention-days: 30
