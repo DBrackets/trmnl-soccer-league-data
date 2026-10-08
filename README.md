@@ -1,19 +1,51 @@
 # trmnl-soccer-league-data
 
-Static team-list JSON for the "[Copy] EPL Fixtures" TRMNL plugin's dynamic "My Team" picker.
+Static team-list JSON for TRMNL plugins' dynamic "My Team" pickers (chained `xhrSelect` /
+`depends_on` dropdowns). One file per league, named with ESPN's own soccer league slug.
 
-Each file is a flat array of `{"name": "...", "id": "..."}` objects — the `id` is the ESPN team ID used
-by `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/...` endpoints.
+Each file is a flat array of `{"name": "...", "id": "..."}` objects — the `id` is the ESPN team ID
+used by `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/...` endpoints.
 
-- `eng.1.json` — Premier League
-- `eng.2.json` — Championship
-- `eng.3.json` — League One
-- `eng.4.json` — League Two
+| File | League |
+|---|---|
+| `eng.1.json` | England — Premier League |
+| `eng.2.json` | England — Championship |
+| `eng.3.json` | England — League One |
+| `eng.4.json` | England — League Two |
+| `esp.1.json` | Spain — LaLiga |
+| `ita.1.json` | Italy — Serie A |
+| `ger.1.json` | Germany — Bundesliga |
+| `fra.1.json` | France — Ligue 1 |
+| `ned.1.json` | Netherlands — Eredivisie |
+| `por.1.json` | Portugal — Primeira Liga |
+| `bel.1.json` | Belgium — Pro League |
+| `tur.1.json` | Turkey — Süper Lig |
+| `sco.1.json` | Scotland — Premiership |
+
+Every slug was verified live against `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{slug}/teams`
+(2026-10-08) before use.
 
 Rosters are a point-in-time snapshot (correct as of the 2026/27 season). Re-pull from
-`https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/teams` and regenerate each file
-if promotion/relegation or a league restructure makes these stale — typically needed once a season,
-around August.
+`https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/teams` and regenerate the
+relevant file if promotion/relegation or a league restructure makes it stale — typically needed
+once a season, around August.
 
-Consumed by the TRMNL plugin's `myteam` custom field as an `xhrSelect` with `depends_on: league` and
-`remote.url: https://raw.githubusercontent.com/DBrackets/trmnl-soccer-league-data/main/{{league}}.json`.
+## Used by
+
+- **"[Copy] EPL Fixtures"** (English divisions only) — `myteam` custom field is an `xhrSelect` with
+  `depends_on: league` and
+  `remote.url: https://raw.githubusercontent.com/DBrackets/trmnl-soccer-league-data/main/{{league}}.json`.
+  `league`'s own values are the ESPN slugs (`eng.1`–`eng.4`) directly, so no reshaping is needed.
+- A second multi-country plugin (England, Spain, Italy, Germany, France, Netherlands, Portugal,
+  Belgium, Turkey, Scotland) currently stores its own non-ESPN country codes (`england_pl`, `spain`,
+  `italy`, ...) and has 11 separate static "Team" fields shown/hidden via `conditional_validation`
+  instead of one dynamic field. Not yet converted — the plan is to switch its `country` field's
+  values over to these same ESPN slugs and collapse the 11 static team fields into one `xhrSelect`
+  `depends_on: country` field pointed at this repo, the same way "[Copy] EPL Fixtures" now works.
+
+## Why this exists
+
+TRMNL's `xhrSelect`/`remote:` `response_path` can only walk hash keys, not array indices — confirmed
+by testing against ESPN's own nested `sports[0].leagues[0].teams[]` shape, which it can't reach.
+`remote:` also refuses `data:` URIs server-side. A plain flat JSON file, one per league, sidesteps
+both limitations entirely: no response_path needed, and a real `https://` URL works with `remote:`.

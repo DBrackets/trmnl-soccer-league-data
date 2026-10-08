@@ -1,0 +1,22 @@
+[
+  {"name": "Alavés", "id": "96"},
+  {"name": "Athletic Club", "id": "93"},
+  {"name": "Atlético de Madrid", "id": "1068"},
+  {"name": "Barcelona", "id": "83"},
+  {"name": "Celta Vigo", "id": "85"},
+  {"name": "Deportivo", "id": "90"},
+  {"name": "Elche", "id": "3751"},
+  {"name": "Espanyol", "id": "88"},
+  {"name": "Getafe", "id": "2922"},
+  {"name": "Levante", "id": "1538"},
+  {"name": "Málaga", "id": "99"},
+  {"name": "Osasuna", "id": "97"},
+  {"name": "Rayo Vallecano", "id": "101"},
+  {"name": "Racing Santander", "id": "87"},
+  {"name": "Real Betis", "id": "244"},
+  {"name": "Real Madrid", "id": "86"},
+  {"name": "Real Sociedad", "id": "89"},
+  {"name": "Sevilla", "id": "243"},
+  {"name": "Valencia", "id": "94"},
+  {"name": "Villarreal", "id": "102"}
+]

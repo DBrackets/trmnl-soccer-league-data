@@ -1,0 +1,21 @@
+[
+  {"name": "AJ Auxerre", "id": "172"},
+  {"name": "Angers", "id": "7868"},
+  {"name": "Brest", "id": "6997"},
+  {"name": "Le Havre AC", "id": "3236"},
+  {"name": "Le Mans", "id": "2697"},
+  {"name": "Lens", "id": "175"},
+  {"name": "Lille", "id": "166"},
+  {"name": "Lorient", "id": "273"},
+  {"name": "Lyon", "id": "167"},
+  {"name": "Marseille", "id": "176"},
+  {"name": "AS Monaco", "id": "174"},
+  {"name": "Nantes", "id": "165"},
+  {"name": "Nice", "id": "2502"},
+  {"name": "Paris FC", "id": "6851"},
+  {"name": "Paris Saint-Germain", "id": "160"},
+  {"name": "Stade Rennais", "id": "169"},
+  {"name": "Strasbourg", "id": "180"},
+  {"name": "Toulouse", "id": "179"},
+  {"name": "Troyes", "id": "170"}
+]
