@@ -1,10 +1,7 @@
 # trmnl-soccer-league-data
 
-Static team-list JSON for TRMNL plugins' dynamic "My Team" pickers (chained `xhrSelect` /
-`depends_on` dropdowns). One file per league, named with ESPN's own soccer league slug, under
-`uefa/` (all current leagues belong to UEFA member associations or are UEFA club competitions —
-this leaves room for other confederations as separate top-level folders later without renaming
-anything).
+Static team-list JSON for ESPN API team codes. One file per league, named with ESPN's league slug. Filed 
+under member associations.
 
 Each file is a flat array of `{"name": "...", "id": "..."}` objects — the `id` is the ESPN team ID
 used by `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/...` endpoints.
@@ -40,55 +37,16 @@ used by `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/...` 
 | `uefa/uefa.europa.json` | UEFA — Europa League |
 | `uefa/uefa.europa.conf.json` | UEFA — Conference League |
 
-Every slug was verified live against `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{slug}/teams`
-(2026-10-08) before use.
-
-The 15 second-tier/UEFA files above were pulled via a different method than the first 13: a direct
-`curl`/WebFetch against ESPN was blocked by the sandbox's egress proxy, and a first attempt at reading
-them back through TRMNL's `MergeVariablesShowTool` silently capped every nested array at 5 items
-(confirmed by re-fetching Scottish Championship, `sco.2`, in isolation — it showed exactly 5 teams via
-the tool's raw-input echo when the true roster is 10). The reliable fix: a temporary `transform_js` on
-the live plugin that walks the ESPN response itself and returns the roster as a single JSON **string**
-(`JSON.stringify(...)`), not an array — `MergeVariablesShowTool`'s array cap doesn't apply to strings,
-so the full roster comes back intact. Team counts were sanity-checked against each league's known size
-before being written here. The plugin's `transform_js` and `polling_url` were restored to production
-logic immediately afterward.
-
-Rosters are a point-in-time snapshot (correct as of the 2026/27 season). Re-pull from
-`https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/teams` and regenerate the
-relevant file if promotion/relegation or a league restructure makes it stale — typically needed
-once a season, around August.
-
-## Used by
-
-- **"[Copy] EPL Fixtures"** (all 28 leagues/competitions above) — `myteam` custom field is an
-  `xhrSelect` with `depends_on: league` and
+Useful for `myteam` custom fields as an `xhrSelect` with `depends_on: league` and
   `remote.url: https://raw.githubusercontent.com/DBrackets/trmnl-soccer-league-data/main/uefa/{{league}}.json`.
-  `league`'s own values are the ESPN slugs directly, so no reshaping is needed.
-- A second multi-country plugin (England, Spain, Italy, Germany, France, Netherlands, Portugal,
-  Belgium, Turkey, Scotland) currently stores its own non-ESPN country codes (`england_pl`, `spain`,
-  `italy`, ...) and has 11 separate static "Team" fields shown/hidden via `conditional_validation`
-  instead of one dynamic field. Not yet converted — the plan is to switch its `country` field's
-  values over to these same ESPN slugs and collapse the 11 static team fields into one `xhrSelect`
-  `depends_on: country` field pointed at this repo, the same way "[Copy] EPL Fixtures" now works.
 
 ## Adding another confederation
+Each confederation gets its own top-level folder, holding the same flat `{"name", "id"}` JSON files named by ESPN slug.
 
-Each confederation gets its own top-level folder (`uefa/`, and e.g. `conmebol/` if one is added),
-holding the same flat `{"name", "id"}` JSON files named by ESPN slug — the ESPN teams endpoint
-(`.../soccer/{slug}/teams`) and the comparison scripts don't care which confederation a slug
-belongs to, only the slug itself.
-
-`scripts/check_all_teams.py --directory <folder>` checks one confederation folder at a time (its
-`--directory` glob isn't recursive). The **"Compare all repository teams with ESPN"** GitHub
-Actions workflow exposes this as a `directory` input (default `uefa`) — run it once per
-confederation folder you want checked. The single-file workflow (`check-teams.yml` /
-`scripts/check_teams.py`) already takes a repo-relative path, so it works unchanged against any
-folder, e.g. `conmebol/arg.1.json`.
+## Checks
+`scripts/check_all_teams.py --directory <folder>` checks one confederation folder at a time.
 
 ## Why this exists
-
-TRMNL's `xhrSelect`/`remote:` `response_path` can only walk hash keys, not array indices — confirmed
-by testing against ESPN's own nested `sports[0].leagues[0].teams[]` shape, which it can't reach.
+TRMNL's `xhrSelect`/`remote:` `response_path` can only walk hash keys, not array indices — 
 `remote:` also refuses `data:` URIs server-side. A plain flat JSON file, one per league, sidesteps
 both limitations entirely: no response_path needed, and a real `https://` URL works with `remote:`.
