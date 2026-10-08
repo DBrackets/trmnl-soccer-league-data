@@ -3,6 +3,11 @@ name: Compare all repository teams with ESPN
 on:
   workflow_dispatch:
     inputs:
+      directory:
+        description: "Confederation folder to check (e.g. uefa, conmebol)"
+        required: true
+        default: "uefa"
+        type: string
       compare_names:
         description: "Fail if matching IDs have different team names"
         required: true
@@ -29,7 +34,7 @@ jobs:
       - name: Compare all league files
         run: |
           python scripts/check_all_teams.py \
-            --directory "uefa" \
+            --directory "${{ inputs.directory }}" \
             --compare-names "${{ inputs.compare_names }}" \
             --exclude package.json \
             --exclude package-lock.json
@@ -38,7 +43,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: all-team-comparison-report
+          name: all-team-comparison-report-${{ inputs.directory }}
           path: all-team-comparison-report.md
           if-no-files-found: warn
           retention-days: 30

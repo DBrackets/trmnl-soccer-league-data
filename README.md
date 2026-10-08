@@ -72,6 +72,20 @@ once a season, around August.
   values over to these same ESPN slugs and collapse the 11 static team fields into one `xhrSelect`
   `depends_on: country` field pointed at this repo, the same way "[Copy] EPL Fixtures" now works.
 
+## Adding another confederation
+
+Each confederation gets its own top-level folder (`uefa/`, and e.g. `conmebol/` if one is added),
+holding the same flat `{"name", "id"}` JSON files named by ESPN slug — the ESPN teams endpoint
+(`.../soccer/{slug}/teams`) and the comparison scripts don't care which confederation a slug
+belongs to, only the slug itself.
+
+`scripts/check_all_teams.py --directory <folder>` checks one confederation folder at a time (its
+`--directory` glob isn't recursive). The **"Compare all repository teams with ESPN"** GitHub
+Actions workflow exposes this as a `directory` input (default `uefa`) — run it once per
+confederation folder you want checked. The single-file workflow (`check-teams.yml` /
+`scripts/check_teams.py`) already takes a repo-relative path, so it works unchanged against any
+folder, e.g. `conmebol/arg.1.json`.
+
 ## Why this exists
 
 TRMNL's `xhrSelect`/`remote:` `response_path` can only walk hash keys, not array indices — confirmed
