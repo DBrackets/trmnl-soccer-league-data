@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       json_file:
-        description: "Repository-relative JSON file, e.g. aut.1.json"
+        description: "Repository-relative JSON file, e.g. uefa/aut.1.json"
         required: true
         type: string
 
