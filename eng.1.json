@@ -1,0 +1,22 @@
+[
+  {"name": "AFC Bournemouth", "id": "349"},
+  {"name": "Arsenal", "id": "359"},
+  {"name": "Aston Villa", "id": "362"},
+  {"name": "Brentford", "id": "337"},
+  {"name": "Brighton & Hove Albion", "id": "331"},
+  {"name": "Chelsea", "id": "363"},
+  {"name": "Coventry City", "id": "388"},
+  {"name": "Crystal Palace", "id": "384"},
+  {"name": "Everton", "id": "368"},
+  {"name": "Fulham", "id": "370"},
+  {"name": "Hull City", "id": "306"},
+  {"name": "Ipswich Town", "id": "373"},
+  {"name": "Leeds United", "id": "357"},
+  {"name": "Liverpool", "id": "364"},
+  {"name": "Manchester City", "id": "382"},
+  {"name": "Manchester United", "id": "360"},
+  {"name": "Newcastle United", "id": "361"},
+  {"name": "Nottingham Forest", "id": "393"},
+  {"name": "Sunderland", "id": "366"},
+  {"name": "Tottenham Hotspur", "id": "367"}
+]
