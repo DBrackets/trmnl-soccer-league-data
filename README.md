@@ -36,6 +36,11 @@ used by `https://site.web.api.espn.com/apis/site/v2/sports/soccer/{league}/...` 
 | `uefa/uefa.champions.json` | UEFA — Champions League |
 | `uefa/uefa.europa.json` | UEFA — Europa League |
 | `uefa/uefa.europa.conf.json` | UEFA — Conference League |
+| `uefa/eng.w.1.json` | England — Women's Super League |
+| `uefa/esp.w.1.json` | Spain — Liga F |
+| `uefa/fra.w.1.json` | France — Première Ligue |
+| `uefa/ned.w.1.json` | Netherlands — Eredivisie Vrouwen |
+| `uefa/uefa.wchampions.json` | UEFA — Women's Champions League |
 
 Useful for `myteam` custom fields as an `xhrSelect` with `depends_on: league` and
   `remote.url: https://raw.githubusercontent.com/DBrackets/trmnl-soccer-league-data/main/uefa/{{league}}.json`.
